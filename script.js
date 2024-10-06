@@ -1,17 +1,25 @@
 // Initialize data storage
 let quests = JSON.parse(localStorage.getItem('quests')) || [];
 let moodLogs = JSON.parse(localStorage.getItem('moodLogs')) || [];
+let userXP = parseInt(localStorage.getItem('userXP')) || 0; // User XP
+let userLevel = parseInt(localStorage.getItem('userLevel')) || 1; // User Level
 
 // Function to add a new quest
 function addQuest() {
     const questInput = document.getElementById('questInput');
     const questText = questInput.value.trim();
     if (questText) {
-        const newQuest = { text: questText, completed: false, date: new Date().toISOString() };
+        const newQuest = {
+            text: questText,
+            completed: false,
+            date: new Date().toISOString()
+        };
         quests.push(newQuest);
         questInput.value = '';
         updateQuestList();
         saveData();
+        userXP += 10; // Gain 10 XP for adding a quest
+        updateLevel();
     } else {
         alert('Please enter a quest.');
     }
@@ -24,32 +32,54 @@ function updateQuestList() {
     let completedCount = 0;
     quests.forEach((quest, index) => {
         const li = document.createElement('li');
+        li.setAttribute('data-id', quest.id);
         li.innerHTML = `
-            <input type="checkbox" ${quest.completed ? 'checked' : ''} />
-            <span class="${quest.completed ? 'completed' : ''}">${quest.text}</span>
-            <small>Added on: ${new Date(quest.date).toLocaleDateString()}</small>
-            <button class="delete-btn">Delete</button>
+            <div class="checkbox">
+                <span class="close"><i class="fa fa-times"></i></span>
+                <label>
+                    <span class="checkbox-mask"></span>
+                    <input type="checkbox" ${quest.completed ? 'checked' : ''} />
+                    ${quest.text}
+                </label>
+            </div>
         `;
-        // Add event listeners
         const checkbox = li.querySelector('input[type="checkbox"]');
         checkbox.addEventListener('change', () => toggleQuest(index));
-        const deleteButton = li.querySelector('.delete-btn');
+        const deleteButton = li.querySelector('.close');
         deleteButton.addEventListener('click', () => deleteQuest(index));
-        
         questList.appendChild(li);
         if (quest.completed) completedCount++;
     });
     document.getElementById('completedCount').textContent = completedCount;
     updateProgressBar(completedCount);
+    updateDailyProgress();
     updateCharts();
 }
 
-// Function to update progress bar
+// Function to update the overall progress bar
 function updateProgressBar(completedCount) {
     const totalQuests = quests.length;
     const progressBar = document.getElementById('questProgress');
     const progressPercentage = totalQuests ? (completedCount / totalQuests) * 100 : 0;
     progressBar.style.width = `${progressPercentage}%`;
+}
+
+// Function to update daily progress
+function updateDailyProgress() {
+    const today = new Date().toDateString();
+    const completedToday = quests.filter(
+        quest => quest.completed && new Date(quest.date).toDateString() === today
+    ).length;
+    const totalToday = quests.filter(
+        quest => new Date(quest.date).toDateString() === today
+    ).length;
+
+    const progressPercentage = totalToday ? (completedToday / totalToday) * 100 : 0;
+    const progressBar = document.getElementById('dailyProgressBar');
+    const progressValue = document.getElementById('progressValue');
+
+    progressBar.style.width = `${progressPercentage}%`;
+    progressValue.textContent = `${Math.round(progressPercentage)}%`;
 }
 
 // Function to toggle quest completion
@@ -72,7 +102,7 @@ function deleteQuest(index) {
 let lastMoodLogTime = 0;
 function logMood() {
     const now = Date.now();
-    if (now - lastMoodLogTime < 1000) { // 1 second interval
+    if (now - lastMoodLogTime < 1000) {
         alert('Please wait a moment before logging again.');
         return;
     }
@@ -116,31 +146,47 @@ function resetMoodSliders() {
 function saveData() {
     localStorage.setItem('quests', JSON.stringify(quests));
     localStorage.setItem('moodLogs', JSON.stringify(moodLogs));
+    localStorage.setItem('userXP', userXP); // Save user XP
+    localStorage.setItem('userLevel', userLevel); // Save user Level
 }
 
 // Function to filter mood logs based on time frame
 function filterMoodLogs(timeFrame) {
     const filteredMoodLog = document.getElementById('filteredMoodLog');
-    filteredMoodLog.innerHTML = ''; // Clear previous logs
+    filteredMoodLog.innerHTML = '';
     const now = new Date();
     let filteredLogs;
 
     switch (timeFrame) {
         case '24h':
-            filteredLogs = moodLogs.filter(log => new Date(log.date) > new Date(now - 24 * 60 * 60 * 1000));
+            filteredLogs = moodLogs.filter(log =>
+                new Date(log.date) > new Date(now - 24 * 60 * 60 * 1000)
+            );
             break;
         case '1w':
-            filteredLogs = moodLogs.filter(log => new Date(log.date) > new Date(now - 7 * 24 * 60 * 60 * 1000));
+            filteredLogs = moodLogs.filter(log =>
+                new Date(log.date) > new Date(now - 7 * 24 * 60 * 60 * 1000)
+            );
             break;
         case '2w':
-            filteredLogs = moodLogs.filter(log => new Date(log.date) > new Date(now - 14 * 24 * 60 * 60 * 1000));
+            filteredLogs = moodLogs.filter(log =>
+                new Date(log.date) > new Date(now - 14 * 24 * 60 * 60 * 1000)
+            );
             break;
         case '4w':
-            filteredLogs = moodLogs.filter(log => new Date(log.date) > new Date(now - 28 * 24 * 60 * 60 * 1000));
+            filteredLogs = moodLogs.filter(log =>
+                new Date(log.date) > new Date(now - 28 * 24 * 60 * 60 * 1000)
+            );
             break;
         default:
             filteredLogs = [];
     }
+
+    // Remove specific mood log entries
+    filteredLogs = filteredLogs.filter(log => {
+        const logDate = new Date(log.date);
+        return !(logDate.getDate() === 6 && logDate.getMonth() === 9 && logDate.getFullYear() === 2024);
+    });
 
     if (filteredLogs.length === 0) {
         filteredMoodLog.innerHTML = '<p>No mood logs found for this time frame.</p>';
@@ -162,14 +208,19 @@ function updateCharts() {
 // Function to update mood chart
 function updateMoodChart() {
     const ctx = document.getElementById('moodChart').getContext('2d');
-    // Clear previous chart
     if (window.moodChartInstance) {
         window.moodChartInstance.destroy();
     }
 
-    const lastWeekMoods = moodLogs.filter(log => new Date(log.date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+    const lastWeekMoods = moodLogs.filter(
+        log => new Date(log.date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    );
     const moodData = {
-        happy: [], sad: [], anxious: [], excited: [], tired: []
+        happy: [],
+        sad: [],
+        anxious: [],
+        excited: [],
+        tired: []
     };
     lastWeekMoods.forEach(log => {
         for (let mood in log.mood) {
@@ -177,58 +228,36 @@ function updateMoodChart() {
         }
     });
 
-    // Calculate averages
-    const averageMood = {};
-    for (let mood in moodData) {
-        const total = moodData[mood].reduce((a, b) => a + b, 0);
-        averageMood[mood] = moodData[mood].length ? (total / moodData[mood].length).toFixed(2) : 0;
-    }
-
-    // Update average moods display
-    const averageMoodsDiv = document.getElementById('averageMoods');
-    if (averageMoodsDiv) {
-        averageMoodsDiv.innerHTML = `
-            <h3>Average Moods (Last Week)</h3>
-            <ul>
-                ${Object.keys(averageMood).map(mood => `<li>${mood.charAt(0).toUpperCase() + mood.slice(1)}: ${averageMood[mood]}</li>`).join('')}
-            </ul>
-        `;
-    }
+    // Prepare data for chart
+    const labels = lastWeekMoods.map(log => new Date(log.date).toLocaleDateString());
+    const datasets = Object.keys(moodData).map(mood => ({
+        label: mood.charAt(0).toUpperCase() + mood.slice(1),
+        data: moodData[mood],
+        borderColor: getColorForMood(mood),
+        fill: false,
+        tension: 0.1
+    }));
 
     window.moodChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: lastWeekMoods.map(log => new Date(log.date).toLocaleDateString()),
-            datasets: Object.keys(moodData).map(mood => ({
-                label: mood.charAt(0).toUpperCase() + mood.slice(1),
-                data: moodData[mood],
-                borderColor: getColorForMood(mood),
-                fill: false,
-                tension: 0.1
-            }))
+            labels: labels,
+            datasets: datasets
         },
         options: {
             responsive: true,
             plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Mood Trends Over Last Week'
-                }
+                legend: { position: 'top' },
+                title: { display: true, text: 'Mood Trends Over Last Week' }
             },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 100
-                }
+                y: { beginAtZero: true, max: 100 }
             }
         }
     });
 }
 
-// Function to get color for mood
+// Function to get color for moods
 function getColorForMood(mood) {
     const colors = {
         happy: '#FFD700',
@@ -237,18 +266,19 @@ function getColorForMood(mood) {
         excited: '#32CD32',
         tired: '#A9A9A9'
     };
-    return colors[mood] || '#0000';
+    return colors[mood] || '#000000';
 }
 
 // Function to update task chart
 function updateTaskChart() {
     const ctx = document.getElementById('taskChart').getContext('2d');
-    // Clear previous chart
     if (window.taskChartInstance) {
         window.taskChartInstance.destroy();
     }
 
-    const lastWeekTasks = quests.filter(quest => new Date(quest.date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
+    const lastWeekTasks = quests.filter(
+        quest => new Date(quest.date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    );
     const completedTasks = lastWeekTasks.filter(quest => quest.completed).length;
     const incompleteTasks = lastWeekTasks.length - completedTasks;
 
@@ -264,16 +294,21 @@ function updateTaskChart() {
         options: {
             responsive: true,
             plugins: {
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Task Completion (Last Week)'
-                }
+                legend: { position: 'top' },
+                title: { display: true, text: 'Task Completion (Last Week)' }
             }
         }
     });
+}
+
+// Function to update user level based on XP
+function updateLevel() {
+    const levelUpXP = 100; // XP required to level up
+    if (userXP >= levelUpXP * userLevel) {
+        userLevel++;
+        alert(`Congratulations! You've reached Level ${userLevel}!`);
+    }
+    document.getElementById('levelDisplay').textContent = `Level: ${userLevel} | XP: ${userXP}/${levelUpXP * userLevel}`;
 }
 
 // Event listeners for mood sliders
@@ -293,3 +328,4 @@ document.getElementById('logMoodButton').addEventListener('click', logMood);
 updateQuestList();
 updateMoodLog();
 updateCharts();
+updateLevel(); // Update level display on load

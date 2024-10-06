@@ -2,24 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADHD Quest Tracker</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 <body>
     <div class="container">
         <h1>ADHD Quest Tracker</h1>
 
+        <div class="level-display" id="levelDisplay">Level: 1 | XP: 0/100</div>
+
+        <!-- Quests Section -->
         <div id="questList" class="quest">
             <h2>Quests</h2>
-            <input type="text" id="questInput" placeholder="Enter new quest" />
-            <button id="addQuestButton">Add Quest</button>
-            <ul id="quests"></ul>
+            <div class="add-control">
+                <div class="form-group has-feedback">
+                    <input type="text" class="form-control" id="questInput" placeholder="✍️ Add item..." />
+                    <i class="fa fa-plus form-control-feedback add-btn" title="Add item" id="addQuestButton"></i>
+                </div>
+            </div>
+            <p class="err text-danger text-center hidden"><i class="fa fa-warning"></i> Oops! Please, enter name item</p>
+            <p class="no-items text-muted text-center hidden"><i class="fa fa-ban"></i></p>
+            <ul id="quests" class="todo-list"></ul>
             <p>Completed Tasks: <span id="completedCount">0</span></p>
             <div class="progress-bar" id="questProgress" style="width: 0%;"></div>
         </div>
 
+        <!-- Daily Progress Section -->
+        <div class="chart">
+            <h2>Daily Progress</h2>
+            <div class="bar" id="dailyProgressBar"></div>
+            <span id="progressValue">0%</span>
+        </div>
+
+        <!-- Mood Tracker Section -->
         <div id="moodTracker" class="mood">
             <h2>Mood Tracker</h2>
             <div class="mood-slider">
@@ -52,6 +69,7 @@
             <div id="averageMoods"></div>
         </div>
 
+        <!-- Mood Logs Section -->
         <div>
             <h2>View Mood Logs</h2>
             <button onclick="filterMoodLogs('24h')">Last 24 Hours</button>
@@ -61,6 +79,7 @@
             <div id="filteredMoodLog"></div>
         </div>
 
+        <!-- Charts Section -->
         <div id="charts">
             <canvas id="moodChart"></canvas>
             <canvas id="taskChart"></canvas>
