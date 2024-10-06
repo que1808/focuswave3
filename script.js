@@ -266,7 +266,7 @@ function getColorForMood(mood) {
         excited: '#32CD32',
         tired: '#A9A9A9'
     };
-    return colors[mood] || '#000000';
+    return colors[mood] || '#0000';
 }
 
 // Function to update task chart

@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap');
+
+/* Cool infinite background scrolling animation */
 @import url('https://fonts.googleapis.com/css?family=Exo:100');
 
 /* Background data */
@@ -24,7 +26,8 @@ body {
     font: 400 16px/1.5 exo, ubuntu, "segoe ui", helvetica, arial, sans-serif;
     text-align: center;
     background: var(--bg-url) repeat 0 0;
-    animation: bg-scrolling-reverse .92s infinite linear; /* Safari 4+ */
+    animation: bg-scrolling-reverse 0.92s infinite; /* Safari 4+ */
+    animation-timing-function: linear;
 }
 
 .container {
@@ -83,7 +86,7 @@ h1::after, h2::after {
 .quest, .mood, .chart {
     background: #3a3a3a;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     margin-bottom: 20px;
     padding: 15px;
     transition: transform 0.2s;
