@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusWave - ADHD Task and Wellbeing App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+</head>
+<body>
+
+<header>
+    <h1>FocusWave</h1>
+    <p>Your ADHD Task and Wellbeing Companion</p>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#tasks">T.A.S.K. Manager (To-Do Assignment Super Keeper)</a>
+    <a href="#wellbeing">W.E.L.L. (Wellness Evaluation and Lifestyle Logger)</a>
+    <a href="#stats">Statistics</a>
+    <a href="#settings">Settings</a>
+</nav>
+
+<main>
+    <section id="tasks">
+        <h2>T.A.S.K. Manager</h2>
+        <h3>Add New T.A.S.K.</h3>
+        <form id="task-form">
+            <label for="task-name">T.A.S.K. Name:</label>
+            <input type="text" id="task-name" required>
+            <label for="category">C.A.T.:</label>
+            <input type="text" id="category">
+            <label for="priority-slider">P.R.I.O.:</label>
+            <input type="range" id="priority-slider" min="1" max="3" step="1" value="2">
+            <div id="priority-display">Medium Priority</div>
+            <label for="deadline">D.E.D.L.I.N.E.:</label>
+            <input type="datetime-local" id="deadline">
+            <input type="submit" value="Add T.A.S.K.">
+        </form>
+
+        <h3>T.A.S.K. List</h3>
+        <table id="task-table">
+            <tr>
+                <th>Done</th>
+                <th>T.A.S.K.</th>
+                <th>C.A.T.</th>
+                <th>P.R.I.O.</th>
+                <th>D.E.D.L.I.N.E.</th>
+                <th>Delete</th>
+            </tr>
+        </table>
+    </section>
+
+    <section id="wellbeing">
+        <h2>W.E.L.L. Tracker</h2>
+        <h3>Log New M.O.O.D.</h3>
+        <form id="mood-form">
+            <label for="mood-slider">Today's M.O.O.D.:</label>
+            <input type="range" id="mood-slider" min="1" max="5" step="1" value="3">
+            <div id="mood-display">Neutral</div>
+            <label for="notes">Notes:</label>
+            <textarea id="notes" rows="4"></textarea>
+            <input type="submit" value="Log M.O.O.D.">
+        </form>
+
+        <h3>Mood Journal</h3>
+        <table id="mood-table">
+            <tr>
+                <th>Date</th>
+                <th>M.O.O.D.</th>
+                <th>Notes</th>
+                <th>Delete</th>
+            </tr>
+        </table>
+
+        <h3>Habit Tracker</h3>
+        <table id="habit-table">
+            <tr>
+                <th>Habit</th>
+                <th>Completed</th>
+            </tr>
+            <tr>
+                <td>Exercise</td>
+                <td><input type="checkbox" class="habit-checkbox" data-habit="Exercise"></td>
+            </tr>
+            <tr>
+                <td>Meditation</td>
+                <td><input type="checkbox" class="habit-checkbox" data-habit="Meditation"></td>
+            </tr>
+        </table>
+    </section>
+
+    <section id="stats">
+        <h2>Statistics</h2>
+        <div class="chart-container">
+            <canvas id="tasksChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="moodChart"></canvas>
+        </div>
+    </section>
+
+    <section id="settings">
+        <h2>Settings</h2>
+        <h3>Customization Options</h3>
+        <form id="settings-form">
+            <label for="theme-slider">Theme:</label>
+            <input type="range" id="theme-slider" min="1" max="2" step="1" value="1">
+            <div id="theme-display">Dark Theme</div>
+            <label for="font-size-slider">Font Size:</label>
+            <input type="range" id="font-size-slider" min="1" max="3" step="1" value="2">
+            <div id="font-size-display">Default Size</div>
+            <input type="submit" value="Apply Settings">
+        </form>
+    </section>
+
+</main>
+
+<footer>
+    <p>&copy; 2023 FocusWave</p>
+</footer>
+
+<script type="module" src="./modules/initApp.js"></script>
+<script src="service-worker.js"></script>
+</body>
+</html>
