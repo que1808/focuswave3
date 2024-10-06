@@ -3,17 +3,21 @@ const urlsToCache = [
     '/',
     '/index.html',
     '/styles.css',
-    '/script.js',
-    '/modules/initApp.js'
+    '/modules/initApp.js',
+    '/modules/settings.js',
+    '/modules/tasks.js',
+    '/modules/moods.js',
+    '/modules/habits.js',
+    '/modules/statistics.js'
 ];
 
 // Install the service worker and cache files
 self.addEventListener('install', function(event) {
     event.waitUntil(
         caches.open(CACHE_NAME)
-        .then(function(cache) {
-            return cache.addAll(urlsToCache);
-        })
+            .then(function(cache) {
+                return cache.addAll(urlsToCache);
+            })
     );
 });
 
@@ -21,9 +25,9 @@ self.addEventListener('install', function(event) {
 self.addEventListener('fetch', function(event) {
     event.respondWith(
         caches.match(event.request)
-        .then(function(response) {
-            return response || fetch(event.request);
-        })
+            .then(function(response) {
+                return response || fetch(event.request);
+            })
     );
 });
 
