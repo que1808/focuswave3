@@ -1,113 +1,177 @@
-/* Basic Styling */
-body {
-    font-family: 'Poppins', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap');
+
+* {
     margin: 0;
     padding: 0;
-    background-color: #121212;
-    color: #E0E0E0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
 }
-header, nav, main, footer {
+
+body {
+    background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
     padding: 20px;
 }
-header, nav, footer {
-    background-color: #1F1B24;
-    color: #BB86FC;
-    text-align: center;
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin-top: 20px;
+    background: #2c2c2c;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
-nav a {
-    margin: 10px;
-    color: #BB86FC;
-    text-decoration: none;
-    font-weight: 600;
-}
+
 h1, h2 {
-    color: #BB86FC;
+    position: relative;
+    color: #4a90e2;
+    text-align: center;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
-h3 {
-    color: #03DAC5;
-}
-section {
-    margin-bottom: 40px;
-}
-input, select, textarea {
-    background-color: #1E1E1E;
-    color: #E0E0E0;
-    border: 1px solid #BB86FC;
+
+h1::after, h2::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -5px;
+    height: 5px;
+    background: linear-gradient(270deg, #FFD700, #4a90e2, #FFD700);
+    animation: glow 1.5s infinite alternate;
     border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-    width: 100%;
-    max-width: 500px;
 }
-input[type="submit"] {
-    background-color: #BB86FC;
-    color: #121212;
-    cursor: pointer;
-}
-input[type="submit"]:hover {
-    background-color: #03DAC5;
-}
-table {
-    width: 100%;
-    max-width: 500px;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-th, td {
-    border: 1px solid #333;
-    padding: 12px;
-    text-align: left;
-}
-th {
-    background-color: #1F1B24;
-}
-tr:nth-child(even) {
-    background-color: #1E1E1E;
-}
-progress {
-    width: 100%;
-    max-width: 500px;
-}
-footer {
-    color: #BB86FC;
-}
-.completed {
-    text-decoration: line-through;
-    color: #717171;
-}
-/* Feedback Animations */
-button {
-    transition: transform 0.2s ease-in-out;
-}
-button:hover {
-    transform: scale(1.1);
-}
-input[type="submit"], button {
-    transition: background-color 0.3s, transform 0.3s;
-}
-input[type="submit"]:hover, button:hover {
-    background-color: #03DAC5;
-    transform: translateY(-2px);
-}
-/* Animation for adding tasks/moods */
-@keyframes addSuccess {
+
+@keyframes glow {
     0% {
-        background-color: #BB86FC;
-        transform: scale(1.2);
+        transform: scale(1);
+        opacity: 0.5;
     }
     100% {
-        background-color: transparent;
-        transform: scale(1);
+        transform: scale(1.1);
+        opacity: 1;
     }
 }
-#task-table tr:last-child,
-#mood-table tr:last-child {
-    animation: addSuccess 0.5s ease-in-out;
+
+.quest, .mood {
+    background: #3a3a3a;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 20px;
+    padding: 15px;
+    transition: transform 0.2s;
 }
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-    width: 8px;
+
+.quest:hover, .mood:hover {
+    transform: scale(1.02);
 }
-::-webkit-scrollbar-thumb {
-    background: #BB86FC;
+
+.mood-slider {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.mood-slider span {
+    font-size: 0.8em;
+    color: #999;
+    width: 25px;
+    text-align: right;
+    padding-right: 5px;
+}
+
+.mood-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: #444;
+    outline: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 1);
+}
+
+.mood-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #4a90e2;
+    cursor: pointer;
+    border: 1px solid #333;
+}
+
+.mood-range::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #4a90e2;
+    cursor: pointer;
+    border: 1px solid #333;
+}
+
+.mood-slider label {
+    margin-left: 8px;
+    font-size: 0.8em;
+    color: #e0e0e0;
+}
+
+input[type="text"], select, button {
+    background: #444;
+    border: none;
+    color: #e0e0e0;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    width: 100%;
+    transition: background 0.3s;
+}
+
+button {
+    cursor: pointer;
+    background: #4a90e2;
+    transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background: #357ab7;
+    transform: scale(1.05);
+}
+
+#quests li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+#quests li input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+#charts canvas {
+    background: #333;
+    border-radius: 4px;
+    margin-top: 10px;
+    width: 100%;
+    height: auto;
+}
+
+.progress-bar {
+    background: #4CAF50;
+    height: 10px;
+    border-radius: 5px;
+    transition: width 0.3s;
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
 }
